@@ -1,3 +1,7 @@
+## 0.10.0+apipalace.1
+* Fix Android IME newline handling by relying on the standard text-editing delta path.
+* Prevent delayed mobile cursor initialization from updating a disposed editor.
+
 ## 0.10.0
 * Fix a typo, using `leadingDivider` instead of `sperator`.
 * Ignore the error when _CodeAutocompleteState is disposed.

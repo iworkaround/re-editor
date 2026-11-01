@@ -449,10 +449,12 @@ class _CodeEditableState extends State<_CodeEditable> with AutomaticKeepAliveCli
 class _CodeCursorBlinkController extends ValueNotifier<bool> {
 
   Timer? _timer;
+  int _blinkGeneration = 0;
 
   _CodeCursorBlinkController() : super(false);
 
   void startBlink() {
+    final int blinkGeneration = ++_blinkGeneration;
     if (_timer != null) {
       _timer!.cancel();
     }
@@ -460,7 +462,9 @@ class _CodeCursorBlinkController extends ValueNotifier<bool> {
     if (kIsAndroid || kIsIOS) {
       // Wait selection position to update
       Future.delayed(const Duration(milliseconds: 100), () {
-        value = true;
+        if (_timer != null && blinkGeneration == _blinkGeneration) {
+          value = true;
+        }
       });
     } else {
       value = true;
@@ -468,6 +472,7 @@ class _CodeCursorBlinkController extends ValueNotifier<bool> {
   }
 
   void stopBlink() {
+    _blinkGeneration++;
     if (_timer == null) {
       return;
     }

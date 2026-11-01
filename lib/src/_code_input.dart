@@ -101,15 +101,7 @@ class _CodeInputController extends ChangeNotifier implements DeltaTextInputClien
   TextEditingValue? get currentTextEditingValue => _buildTextEditingValue();
 
   @override
-  void performAction(TextInputAction action) {
-    if (action == TextInputAction.newline) {
-      // Fix issue #42, iOS will insert duplicate new lines.
-      // We only do this on Android.
-      if (kIsAndroid) {
-        _controller.applyNewLine();
-      }
-    }
-  }
+  void performAction(TextInputAction action) {}
 
   @override
   void performPrivateCommand(String action, Map<String, dynamic> data) {
@@ -137,16 +129,6 @@ class _CodeInputController extends ChangeNotifier implements DeltaTextInputClien
       // This is necessary because otherwise the content of the line where the floating cursor was started
       // will be pasted over to the line where the floating cursor was stopped.
       _updateCausedByFloatingCursor = false;
-      return;
-    }
-
-    if (textEditingDeltas.any((delta) => delta is TextEditingDeltaInsertion && delta.textInserted == '\n')) {
-      TextEditingValue newValue = _remoteEditingValue!;
-      for (final TextEditingDelta delta in textEditingDeltas) {
-        newValue = delta.apply(newValue);
-      }
-      _remoteEditingValue = newValue;
-      _controller.applyNewLine();
       return;
     }
 
